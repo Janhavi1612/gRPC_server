@@ -1,0 +1,73 @@
+syntax = "proto2";
+
+// This is the enum which defines the genre of the book
+enum Genre {
+    HISTORY = 0;
+    MURDER_MYSTERY = 1;
+    COMICS = 2;
+}
+
+// This is the enum which defines the status of an inventory item
+enum Status {
+    AVAILABLE = 0;
+    TAKEN = 1;
+    UNDEFINED = 2;
+}
+
+//This is a message book containing all information about a book
+message Book {
+    required string ISBN = 1;
+    required string title = 2;
+    optional string author = 3;
+    optional Genre genre = 4;
+    optional int32 publishing_year = 5;
+}
+
+//This is an inventory item containing information of an inventory item
+message InventoryItem {
+    required string inventory_number = 1;
+    oneof type {
+        Book book = 2;
+    }
+    optional Status status = 3;
+}
+
+// this is the request message format for create book service
+message CreateBookRequest {
+    required string ISBN = 1;
+    required string title = 2;
+    optional string author = 3;
+    optional Genre genre = 4;
+    optional int32 publishing_year = 5;
+}
+
+// this is the request message format for get book service
+message GetBookRequest {
+    required string ISBN = 1;
+}
+
+// this is the response message format for create book service
+message CreateBookResponse {
+    required string ISBN = 1;
+    optional string error_message_1 = 2;
+}
+
+// this is the response message format for get book service
+message GetBookResponse {
+    optional string ISBN = 1;
+    optional string title = 2;
+    optional string author = 3;
+    optional Genre genre = 4;
+    optional int32 publishing_year = 5;
+    optional Status status = 6;
+    optional string error_message_2 = 7;
+}
+
+service InventoryService {
+    //This takes a book information in request and returns ISBN after book is created
+    rpc CreateBook (CreateBookRequest) returns (CreateBookResponse) {}
+
+    //This takes a book ISBN in request and returns the book information
+    rpc GetBook (GetBookRequest) returns (GetBookResponse) {}
+}
+
